@@ -1,6 +1,6 @@
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext("2d");
-
+var glob = 1;
 class mapManager {
 
     constructor() {
@@ -14,7 +14,7 @@ class mapManager {
         this.imgLoadCount = 0;
         this.jsonLoaded = 0;
         this.imgLoaded = 0;
-        this.view = {x: 0, y: 0, w: 800, h: 800};
+        this.view = {x: 0, y: 0, w: 1700, h: 800};
     }
 
 
@@ -33,11 +33,11 @@ class mapManager {
     }
 
     parseMap(tilesJSON) {
-        console.log("Mapdata b4: " + this.mapData);
-        console.log("xCount b4: " + this.xCount);
-        console.log("yCount b4: " + this.yCount);
-        console.log("tSize b4: " + this.tSize);
-        console.log("mapSize b4: " + this.mapSize);
+        // console.log("Mapdata b4: " + this.mapData);
+        // console.log("xCount b4: " + this.xCount);
+        // console.log("yCount b4: " + this.yCount);
+        // console.log("tSize b4: " + this.tSize);
+        // console.log("mapSize b4: " + this.mapSize);
         this.mapData = JSON.parse(tilesJSON);
         console.log("Mapdata after: " + this.mapData);
         this.xCount = this.mapData.width;  //150 -> count of block by X
@@ -47,14 +47,14 @@ class mapManager {
         // MAP SIZE => COUNT OF BLOCKS * SIZE OF ONE BLOCK
         this.mapSize.x = this.xCount * this.tSize.x;
         this.mapSize.y = this.yCount * this.tSize.y;
-        console.log("Mapdata af4: " + this.mapData);
-        console.log("xCount af4: " + this.xCount);
-        console.log("yCount af4: " + this.yCount);
-        console.log("tSize af4: " + this.tSize);
-        console.log("mapSize af4: " + this.mapSize);
-        console.log("mapSize af4: " + this.tLayer);
-        console.log("_______________________");
-        console.log("cycle len load img: " + this.mapData.tilesets.length);
+        // console.log("Mapdata af4: " + this.mapData);
+        // console.log("xCount af4: " + this.xCount);
+        // console.log("yCount af4: " + this.yCount);
+        // console.log("tSize af4: " + this.tSize);
+        // console.log("mapSize af4: " + this.mapSize);
+        // console.log("mapSize af4: " + this.tLayer);
+        // console.log("_______________________");
+        // console.log("cycle len load img: " + this.mapData.tilesets.length);
 
         for (let i = 0; i < this.mapData.tilesets.length; i++) {
             var img = new Image();
@@ -84,8 +84,8 @@ class mapManager {
             console.log(" lenggg : " + this.tilesets.length);
         }
         this.jsonLoaded = 1;
-        console.log(" load json: " + this.jsonLoaded);
-        console.log(" load img onload: " + this.imgLoaded);
+      //  console.log(" load json: " + this.jsonLoaded);
+       // console.log(" load img onload: " + this.imgLoaded);
     }
 
     draw(ctx) {
@@ -170,25 +170,29 @@ class mapManager {
     }
 
     parseEntities() {
+
         if (!this.imgLoaded || !this.jsonLoaded) {
             setTimeout(() => {
                 this.parseEntities();
             }, 100);
         } else {
-            for (let i = 0; i < this.mapData.layers.length; i++) {
+            for (let i = 0; i < this.mapData.layers.length; i++) {alert("IO");
                 if (this.mapData.layers[i].type === 'objectgroup') {
+                    alert("GE");
                     let entities = this.mapData.layers[i];
                     for (let i = 0; i < entities.objects.length; i++) {
                         let e = entities.objects[i];
                         try {
-                            let obj = Object.create(gameManager[e.type]);
+                            let obj = Object.create(new Zombie());
                             obj.name = e.name;
                             obj.pos_x = e.x;
                             obj.pos_y = e.y;
                             obj.size_x = e.width;
                             obj.size_y = e.height;
-                            gameManager.entities.push(obj);
-                            if (obj.name === "player") gameManager.initPlayer(obj);
+
+                            alert("name"+obj.name);
+                            zgameManager.entities.push(obj);
+                            if (obj.name === "player") zgameManager.initPlayer(obj);
                         } catch (ex) {
                             alert("Error while creating [" + e.gid + "]" + e.type + ", " + ex);
                         }
@@ -239,16 +243,16 @@ class Entity {
 }
 
 class Player extends Entity {
-    constructor(e) {
+    constructor() {
         super();
-        this.lifetime = e;
-        this.move_x = 0;
-        this.move_y = 0;
+        this.lifetime = 100;
+        this.move_x = 1;
+        this.move_y = 1;
         this.speed = 1;
     }
 
     draw(ctx) {
-        zpriteManager.drawSprite(ctx, "Walk (1)", this.pos_x, this.pos_y);
+        zpriteManager.drawSprite(ctx, "", this.pos_x, this.pos_y);
     }
 
     update() {
@@ -289,16 +293,16 @@ class Player extends Entity {
 }
 
 class Zombie extends Entity {
-    constructor(lifetime) {
+    constructor() {
         super();
-        this.lifetime = lifetime;
+        this.lifetime = 120;
         this.move_x = -1;
         this.move_y = 0;
         this.speed = 1;
     }
 
     draw(ctx) {
-        zpriteManager.drawSprite(ctx, "Walk (5)", this.pos_x, this.pos_y);
+        zpriteManager.drawSprite(ctx, "Walk (", this.pos_x, this.pos_y);
     }
 
     update() {
@@ -385,7 +389,6 @@ class Bonus extends Entity {
 
 }
 
-let player = new Player(10);
 
 class spriteManager {
     constructor() {
@@ -429,7 +432,12 @@ class spriteManager {
     }
 
     drawSprite(ctx, name, x, y) {
-        console.log("MY NAME IS _+=>", name);
+
+        name += glob+")";
+
+        glob++;
+        if(glob>=9) glob = 1;
+       // console.log("MY NAME IS _+=>", name);
         if (!this.imgLoaded || !this.jsonLoaded) {
             setTimeout(() => {
                 this.drawSprite(ctx, name, x, y)
@@ -446,10 +454,10 @@ class spriteManager {
     }
 
     getSprite(name) {
-        console.log("NAME!=> +>", name);
+       // console.log("NAME!=> +>", name);
         for (let i = 0; i < this.sprites.length; i++) {
             let s = this.sprites[i];
-            console.log("NAME!=> ", i, "+>", s);
+           // console.log("NAME!=> ", i, "+>", s);
             if (s.name === name) return s;
         }
         return null;
@@ -497,11 +505,7 @@ class eventManager {
     }
 }
 
-let zeventManager = new eventManager();
-// zeventManager.setup();
-let zapManager = new mapManager();
-// zapManager.loadMap("test32.json ");
-let zpriteManager = new spriteManager();
+
 // zpriteManager.loadAtlas("spriteszombies.json", "spritesheet.png");
 // //zapManager.parseEntities();
 // zpriteManager.drawSprite(ctx, "Walk (1)", 30, 30);
@@ -552,10 +556,6 @@ class physicManager {
 
 }
 
-
-let zphysicManager = new physicManager();
-
-
 class gameManager {
     constructor() {
         this.factory = {};
@@ -578,10 +578,10 @@ class gameManager {
         this.player.move_x = 0;
         this.player.move_y = 0;
 
-        if (zeventManager.action["up"]) this.player.move_y = -1;
-        if (zeventManager.action["down"]) this.player.move_y = 1;
-        if (zeventManager.action["left"]) this.player.move_y = -1;
-        if (zeventManager.action["right"]) this.player.move_y = 1;
+        if (zeventManager.action["up"]) this.player.pos_y -=40;
+        if (zeventManager.action["down"]) this.player.pos_y += 40;
+        if (zeventManager.action["left"]) this.player.pos_x -= 40;
+        if (zeventManager.action["right"]) this.player.pos_x += 40;
 
         if (zeventManager.action["fire"]) this.player.fire();
 
@@ -597,11 +597,11 @@ class gameManager {
             if (idx > -1)
                 this.entities.splice(idx, 1);
         }
-        if (this.laterKill.length > 0)
-            this.laterKill.length = 0;
+        if (this.laterKill.length > 0) this.laterKill.length = 0;
         zapManager.draw(ctx);
+        console.log("pos x "+ this.player.move_x+ "  y"+ this.player.move_y);
         zapManager.centerAt(this.player.pos_x, this.player.pos_y);
-        this.draw(ctx);
+            this.draw(ctx);
     }
 
     draw(ctx) {
@@ -611,30 +611,40 @@ class gameManager {
 
     loadAll() {
 
-        zapManager.loadMap("map_1.json ");
+        zapManager.loadMap("objgr.json ");
         zpriteManager.loadAtlas("spriteszombies.json", "spritesheet.png");
 
-        zgameManager.factory['Player'] = pl;
 
+        //zgameManager.initPlayer(pl);
         //zgameManager.factory['Zombie'] = Zombie;
         zapManager.parseEntities();
-        zapManager.draw(ctx);
-        zpriteManager.drawSprite(ctx, "Walk (1)", 30, 30);
-        zpriteManager.drawSprite(ctx, "Walk (2)", 340, 30);
-        zpriteManager.drawSprite(ctx, "Walk (3)", 30, 320);
-        zpriteManager.drawSprite(ctx, "Walk (4)", 30, 30);
-
-        //
         zeventManager.setup();
-
+        zapManager.draw(ctx);
 
     }
 
     play() {
+        setInterval(()=>{this.updateWorld()},100);
+    }
 
+    updateWorld(){
+        zgameManager.update();
     }
 }
 
+
+let zeventManager = new eventManager();
+let zapManager = new mapManager();
+let zpriteManager = new spriteManager();
+let zphysicManager = new physicManager();
 let zgameManager = new gameManager();
-let pl = new Player(100);
+
+// load json -> parse -> draw map;
+// zapManager.loadMap("objgr.json");
+// zapManager.parseEntities();
+// zapManager.draw(ctx);
+
+zgameManager.factory['Player'] = new Player();
+zgameManager.factory['Zombie'] = new Zombie();
 zgameManager.loadAll();
+zgameManager.play();

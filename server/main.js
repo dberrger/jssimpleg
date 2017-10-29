@@ -1,6 +1,7 @@
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext("2d");
 var glob = 1;
+
 class mapManager {
 
     constructor() {
@@ -84,8 +85,8 @@ class mapManager {
             console.log(" lenggg : " + this.tilesets.length);
         }
         this.jsonLoaded = 1;
-      //  console.log(" load json: " + this.jsonLoaded);
-       // console.log(" load img onload: " + this.imgLoaded);
+        //  console.log(" load json: " + this.jsonLoaded);
+        // console.log(" load img onload: " + this.imgLoaded);
     }
 
     draw(ctx) {
@@ -105,37 +106,37 @@ class mapManager {
             console.log("DRAW load img onload: " + this.imgLoaded);
             if (this.tLayer === null)
                 console.log("LAYERS : " + this.tLayer);
-                for (let id = 0; id < this.mapData.layers.length; id++) {
-                    let layer = this.mapData.layers[id];
-                    if (layer.type === "tilelayer") {
-                        this.tLayer = layer;
-                       // break;
-                        for (let i = 0; i < this.tLayer.data.length; i++) {
-                            if (this.tLayer.data[i] !== 0) {
-                                let tile = this.getTile(this.tLayer.data[i]);
+            for (let id = 0; id < this.mapData.layers.length; id++) {
+                let layer = this.mapData.layers[id];
+                if (layer.type === "tilelayer") {
+                    this.tLayer = layer;
+                    // break;
+                    for (let i = 0; i < this.tLayer.data.length; i++) {
+                        if (this.tLayer.data[i] !== 0) {
+                            let tile = this.getTile(this.tLayer.data[i]);
 
-                                let pX = (i % this.xCount ) * this.tSize.x;
-                                let pY = Math.floor(i / this.xCount) * this.tSize.y;
-                                /*                   console.log("|||tile.px: " + tile.px);
-                                                    console.log("|||tile.py: " + tile.py);
-                                                    console.log("|||this.tSize.x: " + this.tSize.x);
-                                                    console.log("|||this.tSize.y: " + this.tSize.y);
-                                                    console.log("|||pX: " + pX);
-                                                    console.log("|||pY: " + pY);
-                                                    console.log("|||this.tSize.x: " + this.tSize.x);
-                                                    console.log("|||this.tSize.y: " + this.tSize.y);*/
+                            let pX = (i % this.xCount ) * this.tSize.x;
+                            let pY = Math.floor(i / this.xCount) * this.tSize.y;
+                            /*                   console.log("|||tile.px: " + tile.px);
+                                                console.log("|||tile.py: " + tile.py);
+                                                console.log("|||this.tSize.x: " + this.tSize.x);
+                                                console.log("|||this.tSize.y: " + this.tSize.y);
+                                                console.log("|||pX: " + pX);
+                                                console.log("|||pY: " + pY);
+                                                console.log("|||this.tSize.x: " + this.tSize.x);
+                                                console.log("|||this.tSize.y: " + this.tSize.y);*/
 
-                                if (!this.isVisible(pX, pY, this.tSize.x, this.tSize.y))
-                                    continue;
-                                pX -= this.view.x;
-                                pY -= this.view.y;
+                            if (!this.isVisible(pX, pY, this.tSize.x, this.tSize.y))
+                                continue;
+                            pX -= this.view.x;
+                            pY -= this.view.y;
 
-                                ctx.drawImage(tile.img, tile.px, tile.py, this.tSize.x, this.tSize.y, pX, pY, this.tSize.x, this.tSize.y);
+                            ctx.drawImage(tile.img, tile.px, tile.py, this.tSize.x, this.tSize.y, pX, pY, this.tSize.x, this.tSize.y);
 
-                            }
                         }
                     }
                 }
+            }
 
         }
     }
@@ -176,9 +177,8 @@ class mapManager {
                 this.parseEntities();
             }, 100);
         } else {
-            for (let i = 0; i < this.mapData.layers.length; i++) {alert("IO");
+            for (let i = 0; i < this.mapData.layers.length; i++) {
                 if (this.mapData.layers[i].type === 'objectgroup') {
-                    alert("GE");
                     let entities = this.mapData.layers[i];
                     for (let i = 0; i < entities.objects.length; i++) {
                         let e = entities.objects[i];
@@ -190,7 +190,7 @@ class mapManager {
                             obj.size_x = e.width;
                             obj.size_y = e.height;
 
-                            alert("name"+obj.name);
+                            // alert("name"+obj.name);
                             zgameManager.entities.push(obj);
                             if (obj.name === "player") zgameManager.initPlayer(obj);
                         } catch (ex) {
@@ -256,7 +256,9 @@ class Player extends Entity {
     }
 
     update() {
+        //alert("Here");
         zphysicManager.update(this);
+
     }
 
     onTouchEntity(obj) {
@@ -296,17 +298,19 @@ class Zombie extends Entity {
     constructor() {
         super();
         this.lifetime = 120;
-        this.move_x = -1;
+        this.move_x = 0;
         this.move_y = 0;
-        this.speed = 1;
+        this.speed = 2;
     }
 
     draw(ctx) {
+
         zpriteManager.drawSprite(ctx, "Walk (", this.pos_x, this.pos_y);
     }
 
-    update() {
-        zphysicManager.update(this);
+    update(obj) {
+
+        zphysicManager.update(obj);
     }
 
     onTouchEntity(obj) {
@@ -362,7 +366,7 @@ class Rocket extends Entity {
     }
 
     onTouchMap(idx) {
-
+        alert("Che za huita?");
     }
 
     kill() {
@@ -399,12 +403,12 @@ class spriteManager {
     }
 
     loadAtlas(atlasJson, atlasImg) {
-        console.log("load atlas: atlasJson " + atlasJson);
-        console.log("load atlas: atlaIMG " + atlasImg);
+        //  console.log("load atlas: atlasJson " + atlasJson);
+        // console.log("load atlas: atlaIMG " + atlasImg);
         let request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState === 4 && request.status === 200) {
-                console.log(request.responseText);
+                // console.log(request.responseText);
                 this.parseAtlas(request.responseText);
             }
         };
@@ -425,7 +429,7 @@ class spriteManager {
         let atlas = JSON.parse(atlasJSON);
         for (let name in atlas.frames) {
             let frame = atlas.frames[name].frame;
-            console.log("parseAtlas _> frame: ", frame);
+            // console.log("parseAtlas _> frame: ", frame);
             this.sprites.push({name: name, x: frame.x, y: frame.y, w: frame.w, h: frame.h});
         }
         this.jsonLoaded = true;
@@ -433,19 +437,17 @@ class spriteManager {
 
     drawSprite(ctx, name, x, y) {
 
-        name += glob+")";
+        name += glob + ")";
 
         glob++;
-        if(glob>=9) glob = 1;
-       // console.log("MY NAME IS _+=>", name);
+        if (glob >= 9) glob = 1;
+        // console.log("MY NAME IS _+=>", name);
         if (!this.imgLoaded || !this.jsonLoaded) {
             setTimeout(() => {
                 this.drawSprite(ctx, name, x, y)
             }, 100);
         } else {
             let sprite = this.getSprite(name);
-            console.log("W= " + sprite.w);
-            console.log("H= " + sprite.h);
             if (!zapManager.isVisible(x, y, sprite.w, sprite.h)) return;
             x -= zapManager.view.x;
             y -= zapManager.view.y;
@@ -454,10 +456,10 @@ class spriteManager {
     }
 
     getSprite(name) {
-       // console.log("NAME!=> +>", name);
+        // console.log("NAME!=> +>", name);
         for (let i = 0; i < this.sprites.length; i++) {
             let s = this.sprites[i];
-           // console.log("NAME!=> ", i, "+>", s);
+            // console.log("NAME!=> ", i, "+>", s);
             if (s.name === name) return s;
         }
         return null;
@@ -478,64 +480,55 @@ class eventManager {
 
     setup() {
 //TODO rewrite
-
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-
-
     }
 
     onKeyDown(event) {
-        console.log("1CLICKED = > " + event.keyCode);
+        //console.log("1CLICKED = > " + event.keyCode);
         let action = zeventManager.bind[event.keyCode];
         if (action) {
             zeventManager.action[action] = true;
-            console.log("CLICKED = > " + zeventManager.action[action]);
+            // console.log("CLICKED = > " + zeventManager.action[action]);
         }
     }
 
     onKeyUp(event) {
 
-        console.log("1CLICKED = > " + event.keyCode);
+        // console.log("1CLICKED = > " + event.keyCode);
         let action = zeventManager.bind[event.keyCode];
         if (action) {
             zeventManager.action[action] = false;
-            console.log("CLICKED = > " + zeventManager.action[action]);
+            //  console.log("CLICKED = > " + zeventManager.action[action]);
         }
     }
 }
 
 
-// zpriteManager.loadAtlas("spriteszombies.json", "spritesheet.png");
-// //zapManager.parseEntities();
-// zpriteManager.drawSprite(ctx, "Walk (1)", 30, 30);
-//
-// zapManager.draw(ctx);
-//
-// console.log(zapManager.view.x);
-// console.log(zapManager.view.y);
-// console.log(zapManager.view.h);
-// console.log(zapManager.view.w);
-//
-
 class physicManager {
     update(obj) {
+        console.log("name " + obj.name + " pos_xy: " + obj.pos_x + " " + obj.pos_y + " move_xy " + obj.move_x + " " + obj.move_y + " speed " + obj.speed);
         if (obj.move_x === 0 && obj.move_y === 0)
             return "stop";
+        console.log("2name " + obj.name + " pos_xy: " + obj.pos_x + " " + obj.pos_y + " move_xy " + obj.move_x + " " + obj.move_y + " speed " + obj.speed);
         let newX = obj.pos_x + Math.floor(obj.move_x * obj.speed);
         let newY = obj.pos_y + Math.floor(obj.move_y * obj.speed);
-
-        let ts = zapManager.getTilesetIdx(newX + obj.size_x / 2, newY + obj.size_y / 2);
-        let e = this.entityAtXY(obj, newX, newY);
-        if (e !== null && obj.onTouchEntity) obj.onTouchEntity(e);
-        if (ts !== 7 && obj.onTouchMap())
-            obj.onTouchMap(ts);
-        if (ts === 7 && e === null) {
-            obj.pos_x = newX;
-            obj.pos_y = newY;
-        } else {
-            return "break";
-        }
+        console.log("3name " + obj.name + " pos_xy: " + obj.pos_x + " " + obj.pos_y + " move_xy " + obj.move_x + " " + obj.move_y + " speed " + obj.speed);
+        console.log(" coords : " + newX + " " + newY);
+        let ts = zapManager.getTilesetIdx(newX, newY);
+        if (ts === 3) alert(3);
+//705 y =
+//         let e = this.entityAtXY(obj, newX, newY);
+//         if (e !== null && obj.onTouchEntity) obj.onTouchEntity(e);
+//         if (ts === 3 && obj.onTouchMap)
+//             obj.onTouchMap(ts);
+//         if (ts === 3 && e === null) {
+        console.log("NeX" + newX + " NeY" + newY);
+        obj.pos_x = newX;
+        obj.pos_y = newY;
+        // } else {
+        //     return "break";
+        // }
         return "move";
     }
 
@@ -573,21 +566,25 @@ class gameManager {
         this.laterKill.push(obj);
     }
 
-    update() {
+    updateG() {
         if (this.player === null) return;
         this.player.move_x = 0;
         this.player.move_y = 0;
 
-        if (zeventManager.action["up"]) this.player.pos_y -=40;
-        if (zeventManager.action["down"]) this.player.pos_y += 40;
-        if (zeventManager.action["left"]) this.player.pos_x -= 40;
-        if (zeventManager.action["right"]) this.player.pos_x += 40;
+        if (zeventManager.action["up"]) this.player.move_y = -2;
+        if (zeventManager.action["down"]) this.player.move_y = 2;
+        if (zeventManager.action["left"]) this.player.move_x = -2;
+        if (zeventManager.action["right"]) this.player.move_x = 2;
+
+        this.entities[0].move_x = this.player.move_x;
+        this.entities[0].move_y = this.player.move_y;
 
         if (zeventManager.action["fire"]) this.player.fire();
 
         this.entities.forEach((e) => {
             try {
-                e.update();
+
+                e.update(e);
             } catch (ex) {
             }
         });
@@ -599,9 +596,9 @@ class gameManager {
         }
         if (this.laterKill.length > 0) this.laterKill.length = 0;
         zapManager.draw(ctx);
-        console.log("pos x "+ this.player.move_x+ "  y"+ this.player.move_y);
+        console.log("pos x " + this.player.move_x + "  y" + this.player.move_y);
         zapManager.centerAt(this.player.pos_x, this.player.pos_y);
-            this.draw(ctx);
+        this.draw(ctx);
     }
 
     draw(ctx) {
@@ -624,11 +621,13 @@ class gameManager {
     }
 
     play() {
-        setInterval(()=>{this.updateWorld()},100);
+        setInterval(() => {
+            this.updateWorld()
+        }, 100);
     }
 
-    updateWorld(){
-        zgameManager.update();
+    updateWorld() {
+        zgameManager.updateG();
     }
 }
 

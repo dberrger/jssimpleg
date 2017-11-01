@@ -1,0 +1,374 @@
+{
+  "frames": {
+    "player_run (6)": {
+      "frame": {
+        "x": 168,
+        "y": 153,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (7)": {
+      "frame": {
+        "x": 168,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (8)": {
+      "frame": {
+        "x": 90,
+        "y": 153,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "zombie_run (1)": {
+      "frame": {
+        "x": 126,
+        "y": 102,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (2)": {
+      "frame": {
+        "x": 42,
+        "y": 51,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (3)": {
+      "frame": {
+        "x": 126,
+        "y": 51,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (4)": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (5)": {
+      "frame": {
+        "x": 126,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (6)": {
+      "frame": {
+        "x": 84,
+        "y": 51,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (7)": {
+      "frame": {
+        "x": 0,
+        "y": 51,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (8)": {
+      "frame": {
+        "x": 42,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (9)": {
+      "frame": {
+        "x": 84,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "zombie_run (10)": {
+      "frame": {
+        "x": 0,
+        "y": 102,
+        "w": 41,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 41,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 41,
+        "h": 50
+      }
+    },
+    "player_run (1)": {
+      "frame": {
+        "x": 168,
+        "y": 102,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (2)": {
+      "frame": {
+        "x": 0,
+        "y": 153,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (3)": {
+      "frame": {
+        "x": 42,
+        "y": 102,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (4)": {
+      "frame": {
+        "x": 168,
+        "y": 51,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    },
+    "player_run (5)": {
+      "frame": {
+        "x": 45,
+        "y": 153,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 50
+      }
+    }
+  },
+  "meta": {
+    "app": "https://www.leshylabs.com/apps/sstool/",
+    "version": "Leshy SpriteSheet Tool v0.8.4",
+    "image": "spritesheet.png",
+    "size": {
+      "w": 212,
+      "h": 203
+    },
+    "scale": 1
+  }
+}

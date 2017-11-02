@@ -47,8 +47,8 @@
           "type":"Player",
           "visible":true,
           "width":32,
-          "x":160,
-          "y":512
+          "x":360,
+          "y":212
         },
         {
           "gid":5,

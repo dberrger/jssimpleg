@@ -219,6 +219,12 @@ class Entity {
         this.dy = 0;
         this.size_x = 0;
         this.size_y = 0;
+        this.velocity_x = 0;
+        this.velocity_y = 3;
+        this.jump_start_pos_y = 0;
+        this.jump_start_pos_x = 200;
+
+
     }
 }
 
@@ -228,20 +234,15 @@ class Player extends Entity {
         this.lifetime = 100;
         this.move_x = 1;
         this.move_y = 1;
-        this.speed = 15;
-        this.jump_start_pos_x = 200;
-        this.jump_start_pos_y = 0;
+        this.speed = 5;
+
     }
 
     draw(ctx) {
-
-
         zpriteManager.drawSprite(ctx, "player_run (", this.pos_x, this.pos_y);
     }
 
     update(obj) {
-        //alert("Here");
-        //alert(obj.name);
         zphysicManager.update(obj);
 
     }
@@ -254,7 +255,8 @@ class Player extends Entity {
     kill() {
 
     }
-    onTouchMap(idx){
+
+    onTouchMap(idx) {
 
     }
 
@@ -357,7 +359,7 @@ class Rocket extends Entity {
     }
 
     onTouchMap(idx) {
-        alert(idx+ "Che za huita?");
+        alert(idx + "Che za huita?");
     }
 
     kill() {
@@ -499,76 +501,112 @@ class eventManager {
 class physicManager {
 
     update(obj) {
-        if (obj.move_x === 0 && obj.move_y === 0)
-            return "stop";
+        //     if (obj.move_x === 0 && obj.move_y === 0)
+        //         return "stop";
+        //
+        //     let newX = obj.pos_x + Math.floor(obj.move_x * obj.speed);
+        //     let newY = obj.pos_y;
+        //
+        //
+        //     // let ts = zapManager.getTilesetIdx(newX + obj.size_x / 2, obj.pos_y + obj.size_y / 2);
+        //     // console.log("BLOCK # " + ts);
+        //
+        //     obj.pos_x = newX;
+        //     obj.pos_y = newY;
+        //     // let e = this.entityAtXY(obj, newX, obj.pos_y);
+        //     // if (e !== null && obj.onTouchEntity) //obj.onTouchEntity(e);
+        //     //     if (ts === 6) obj.onTouchMap(ts);
+        //     // if (ts !== 3 && e !== null) {
+        //     //     // console.log("NeX" + newX + " NeY" + newY);
+        //
+        //     // } else {
+        //     //     return "break";
+        //     // }
+        //     return "move";
+        // }
+        // //
+        // // entityAtXY(obj, x, y) {
+        // //     for (let i = 0; i < zgameManager.entities.length; i++) {
+        // //         let e = zgameManager.entities[i];
+        // //         if (e.name !== obj.name) {
+        // //             if (x + obj.size_x < e.pos_x ||
+        // //                 y + obj.size_y < e.pos_y ||
+        // //                 x > e.pos_x + e.size_x ||
+        // //                 y > e.pos_x + e.size_y)
+        // //                 continue;
+        // //         } else {
+        // //             return e;
+        // //         }
+        // //
+        // //     }
+        // //     return null;
+        // // }
+        //
+// velocity
+
 
         let newX = obj.pos_x + Math.floor(obj.move_x * obj.speed);
-        let newY = obj.pos_y;
-        if (obj.move_y === -5 && obj.name === "player") { // if clicked
+        let newY = -obj.move_x;
 
-            if (obj.jump_start_pos_x > 0) {
-                //  alert("ONCE"+ obj.jump_start_pos_x);
-                newY -= 90;
-                obj.jump_start_pos_x -= 100;
-            } else if (obj.jump_start_pos_x <= 0 && obj.jump_start_pos_y !== 200) {
-                newY += 90;
-                obj.jump_start_pos_y += 100;
-                if (obj.jump_start_pos_y === 200 && 0 === obj.jump_start_pos_x) {
-                    obj.jump_start_pos_y = 0;
-                    obj.jump_start_pos_x = 200;
-                    obj.move_y = 0;
-                }
-            }
+
+        let ts_y = zapManager.getTilesetIdx(obj.pos_x, obj.pos_y + obj.size_y + 17);
+
+        alert(zapManager.getTile(zapManager.getTilesetIdx(obj.pos_x, obj.pos_y + obj.size_y + 17)).pos_x);
+        let ts_x = zapManager.getTilesetIdx(obj.pos_x + obj.size_x + 2, obj.pos_y + obj.size_y / 2);
+        // alert(ts.firstgid);
+        console.log(zapManager.getTilesetIdx(obj.pos_x, obj.pos_y + 32));
+        console.log("ts _ x : " + zapManager.getTilesetIdx(obj.pos_x + obj.size_x, obj.pos_y + obj.size_y));
+        console.log("ts _ y : " + ts_y);
+        if (ts_y === 6) {
+            console.log("Zdes" + ts_y);
+            obj.velocity_y = 10;
+            obj.pos_y += 2 * obj.velocity_y;
+        } else {
+            obj.velocity_y = 0;
+
         }
 
-        let ts = zapManager.getTilesetIdx(newX+ obj.size_x/2, obj.pos_y+ obj.size_y/2);
-        console.log("BLOCK # " + ts);
-        // if (ts === 6) {
-        //         obj.pos_y += 1;
-        //     }
-        //     else if (ts === 3) {
-        //         obj.pos_x -= 5;
-        //         obj.pos_y -= 5;
-        //     }
-
+        if (ts_x === 6) {
             obj.pos_x = newX;
-             obj.pos_y = newY;
-            let e = this.entityAtXY(obj, newX, obj.pos_y);
-            if (e !== null && obj.onTouchEntity) //obj.onTouchEntity(e);
-            if (ts === 6) obj.onTouchMap(ts);
-            if (ts !== 3 && e !== null) {
-               // console.log("NeX" + newX + " NeY" + newY);
-
-            } else {
-                return "break";
-            }
-            return "move";
+        } else {
+            obj.pos_x -= obj.size_x;
+            obj.move_x = 0;
         }
 
-        entityAtXY(obj, x, y)
-        {
-            for (let i = 0; i < zgameManager.entities.length; i++) {
-                let e = zgameManager.entities[i];
-                if (e.name !== obj.name) {
-                    if (x + obj.size_x < e.pos_x ||
-                        y + obj.size_y < e.pos_y ||
-                        x > e.pos_x + e.size_x ||
-                        y > e.pos_x + e.size_y)
-                        continue;
-                } else {
-                    console.log("Zzzzzzz "+e.name);
-                    return e;
+        if (obj.move_y === -2) { // if clicked
+           // obj.move_y = 0;
+            // alert(zapManager.getTilesetIdx(obj.pos_x, obj.pos_y + 32 ));
+            if (ts_y === 3) {
+                if (obj.jump_start_pos_x > 0) {
+                    //    alert("ONCE"+ obj.jump_start_pos_x);
+                    //alert(1);
+                    obj.pos_y -= 200;
+                    obj.jump_start_pos_x -= 100;
+                } else if (obj.jump_start_pos_x <= 0 && obj.jump_start_pos_y !== 200) {
+                    //  obj.pos_x += 90;
+                    obj.jump_start_pos_y += 100;
+                    if (obj.jump_start_pos_y === 200 && 0 === obj.jump_start_pos_x) {
+                        obj.jump_start_pos_y = 0;
+                        obj.jump_start_pos_x = 200;
+
+                    }
                 }
-
             }
-            return null;
         }
-
 
     }
 
-    class
-    gameManager {
+    isColliding(object1, object2) {
+        console.log(object1.pos_y + " size y " + object1.size_y + " = " + object2.pos_y);
+        if (object1.pos_x > object2.pos_x + object2.size_x) return false;
+        if (object1.pos_x + object1.size_x > object2.pos_x) return false;
+        if (object1.pos_y > object2.pos_y + object2.size_y) return false;
+        if (object1.pos_y + object1.size_y > object2.pos_y) return false;
+        return true;
+    }
+}
+
+class gameManager {
     constructor() {
         this.factory = {};
         this.entities = [];
@@ -588,12 +626,12 @@ class physicManager {
     updateG() {
         if (this.player === null) return;
         this.player.move_x = 0;
-        // this.player.move_y = 0;
+        this.player.move_y = 0;
 
-        if (zeventManager.action["up"]) this.player.move_y = -5;
-        if (zeventManager.action["down"]) this.player.move_y = 4;
-        if (zeventManager.action["left"]) this.player.move_x = -5;
-        if (zeventManager.action["right"]) this.player.move_x = 4;
+        if (zeventManager.action["up"]) this.player.move_y = -2;
+        if (zeventManager.action["down"]) this.player.move_y = 2;
+        if (zeventManager.action["left"]) this.player.move_x = -2;
+        if (zeventManager.action["right"]) this.player.move_x = 2;
 
         this.entities[1].move_x = this.player.move_x;
         this.entities[1].move_y = this.player.move_y;

@@ -199,7 +199,7 @@ class mapManager {
                 this.view.y = y - (this.view.h / 2);
         }
 
-
+        return { x: this.view.x,  y : this.view.y};
     }
 }
 
@@ -259,14 +259,27 @@ class Player extends Entity {
         // if(zgameManager.player.pos_x > zeventManager.mouse[0] || zeventManager.mouse[1] < zgameManager.player.pos_y )
         //     r.angle = -1* Math.atan2(zeventManager.mouse[1] - zgameManager.player.pos_y, zeventManager.mouse[0] - zgameManager.player.pos_x);
         //  else
-        r.angle = ( Math.atan2(zeventManager.mouse[1] - zgameManager.player.pos_y, zeventManager.mouse[0] - zgameManager.player.pos_x) +360 )% 360 ;
+        let xy1 = zapManager.centerAt(zgameManager.player.pos_x, zgameManager.player.pos_y);
+        let Vx = zeventManager.mouse[0]+xy1.x - zgameManager.player.pos_x;
+        let Vy = zeventManager.mouse[1]+xy1.y - zgameManager.player.pos_y;
+
+        if (Vx || Vy) {
+            r.angle = Math.atan2(Vy, Vx);
+        } else {
+            r.angle = 0;
+        }
+
+        if(r.angle < 0){
+            r.angle += 2*Math.PI;
+        }
+       // r.angle = ( Math.atan2(zeventManager.mouse[1] - zgameManager.player.pos_y, zeventManager.mouse[0] - zgameManager.player.pos_x) + 360 ) % 360;
 
         //(x > 0 ? x : (2*PI + x)) * 360 / (2*PI)
-        console.log("PLAYER POS +=: "+ zgameManager.player.pos_x+" "+zgameManager.player.pos_y);
-        console.log("mouse POS +=: "+ zeventManager.mouse[0]+" "+zeventManager.mouse[1]);
+        console.log("PLAYER POS +=: " + zgameManager.player.pos_x + " " + zgameManager.player.pos_y);
+        console.log("mouse POS +=: " + zeventManager.mouse[0] + " " + zeventManager.mouse[1]);
         console.log(r.angle);
-        r.pos_x =   zgameManager.player.pos_x - 11;
-        r.pos_y =  zgameManager.player.pos_y - 11;
+        r.pos_x = zgameManager.player.pos_x - 11;
+        r.pos_y = zgameManager.player.pos_y - 11;
 
         zgameManager.entities.push(r);
     }
@@ -316,18 +329,18 @@ class Zombie extends Entity {
 
     fire() {
 
-       //  let r = new Rocket();
-       //  r.size_x = 10;
-       //  r.size_y = 8;
-       //  r.name = "rocket_" + (++zgameManager.fireNum);
-       //  // r.move_x = this.move_x;
-       //  // r.move_y = this.move_y;
-       //  // console.log(this.move_x + " mv " + this.move_y);
-       //  r.angle = Math.atan((zgameManager.player.pos_y -zeventManager.mouse[1] )/ (zgameManager.player.pos_x -zeventManager.mouse[0] ));
-       //
-       // r.pos_x = zgameManager.player.pos_x + 50 * this.speed * Math.cos(r.angle);
-       // r.pos_y =zgameManager.player.pos_y + 50 * this.speed * Math.sin(r.angle);
-       //  zgameManager.entities.push(r);
+        //  let r = new Rocket();
+        //  r.size_x = 10;
+        //  r.size_y = 8;
+        //  r.name = "rocket_" + (++zgameManager.fireNum);
+        //  // r.move_x = this.move_x;
+        //  // r.move_y = this.move_y;
+        //  // console.log(this.move_x + " mv " + this.move_y);
+        //  r.angle = Math.atan((zgameManager.player.pos_y -zeventManager.mouse[1] )/ (zgameManager.player.pos_x -zeventManager.mouse[0] ));
+        //
+        // r.pos_x = zgameManager.player.pos_x + 50 * this.speed * Math.cos(r.angle);
+        // r.pos_y =zgameManager.player.pos_y + 50 * this.speed * Math.sin(r.angle);
+        //  zgameManager.entities.push(r);
 
     }
 }
@@ -487,6 +500,8 @@ class eventManager {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
         canvas.addEventListener('mousemove', (ev) => {
+
+
             this.mouse[0] = ev.clientX;
             this.mouse[1] = ev.clientY;
         });
@@ -524,9 +539,9 @@ class physicManager {
 
     update(obj) {
 
-        if(obj.name.match(/rocket_[\d*]/)) {
-            obj.pos_x +=  Math.cos(obj.angle)*21;
-            obj.pos_y +=   Math.sin(obj.angle)*21;
+        if (obj.name.match(/rocket_[\d*]/)) {
+            obj.pos_x += Math.cos(obj.angle) * 21;
+            obj.pos_y += Math.sin(obj.angle) * 21;
         }
         let newX = obj.pos_x + obj.speed / 2 * obj.move_x;
         let newY = obj.pos_y + obj.speed / 2 * obj.move_y;
@@ -680,7 +695,9 @@ class gameManager {
         if (this.laterKill.length > 0) this.laterKill.length = 0;
         zapManager.draw(ctx);
         // console.log("pos x " + this.player.move_x + "  y" + this.player.move_y);
+
         zapManager.centerAt(zgameManager.player.pos_x, zgameManager.player.pos_y);
+
         this.draw(ctx);
     }
 

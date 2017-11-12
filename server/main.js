@@ -19,7 +19,6 @@ class mapManager {
         this.view = {x: 0, y: 0, w: 1200, h: 720};
     }
 
-
     loadMap(path) {
         let request = new XMLHttpRequest();
         request.onreadystatechange = () => {
@@ -49,11 +48,9 @@ class mapManager {
             img.onload = () => {
                 this.imgLoadCount++;
                 if (this.imgLoadCount.toString() === this.mapData.tilesets.length.toString()) {
-                    alert(1);
                     this.imgLoaded = 1;
                 }
 
-                // console.log(" load img onload: " + this.imgLoaded);
             };
             img.src = this.mapData.tilesets[i].image;
 
@@ -67,11 +64,8 @@ class mapManager {
                 yCount: Math.floor(t.imageheight / this.tSize.y)
             };
             this.tilesets.push(ts);
-            // console.log(" lenggg : " + this.tilesets.length);
         }
         this.jsonLoaded = 1;
-        //  console.log(" load json: " + this.jsonLoaded);
-        // console.log(" load img onload: " + this.imgLoaded);
     }
 
     draw(ctx) {
@@ -210,18 +204,19 @@ class Entity {
         this.pos_y = 0;
         this.size_x = 0;
         this.size_y = 0;
+
     }
 }
 
+//TODO add animation for player
 class Player extends Entity {
     constructor() {
         super();
         this.move_x = 0;
         this.move_y = 0;
-        this.speed = 15;
-        this.bullet_timer = 0;
-        this.time_to_fire = 10;
-
+        this.speed = 5;
+        this.fire_delay = true;
+        this.owner = null;
     }
 
     draw(ctx) {
@@ -233,26 +228,20 @@ class Player extends Entity {
 
     }
 
-    onTouchEntity(obj) {
-        console.log("touched " + this.name);
-        // alert(obj.name + "Zombie collide!");
+    onTouchEntity(entity) {
+        //for collecting bullets and ening level
     }
 
     kill() {
-        alert("You're dead!");
         document.location.reload();
     }
 
-    onTouchMap(idx) {
-
-    }
-
     fire() {
-        if (this.bullet_timer === this.time_to_fire) {
+        if (this.fire_delay) {
             let r = new Rocket();
             r.size_x = 10;
             r.size_y = 8;
-            r.name = "rocket_" + (++zgameManager.fireNum);
+            r.name = "bullet_" + (++zgameManager.fireNum);
             let xy1 = zapManager.centerAt(zgameManager.player.pos_x, zgameManager.player.pos_y);
             let Vx = zeventManager.mouse[0] + xy1.x - zgameManager.player.pos_x - zgameManager.player.size_x / 2;
             let Vy = zeventManager.mouse[1] + xy1.y - zgameManager.player.pos_y - zgameManager.player.size_y / 2;
@@ -267,17 +256,18 @@ class Player extends Entity {
                 r.angle += 2 * Math.PI;
             }
 
-            console.log("PLAYER POS +=: " + zgameManager.player.pos_x + " " + zgameManager.player.pos_y);
-            console.log("mouse POS +=: " + zeventManager.mouse[0] + " " + zeventManager.mouse[1]);
-            console.log(r.angle);
+            // console.log("PLAYER POS +=: " + zgameManager.player.pos_x + " " + zgameManager.player.pos_y);
+            // console.log("mouse POS +=: " + zeventManager.mouse[0] + " " + zeventManager.mouse[1]);
+            // console.log(r.angle);
             let startXY = this.getBulletStartPos(r.angle);
             r.pos_x = startXY.x;
             r.pos_y = startXY.y;
-
+            r.owner = this;
             zgameManager.entities.push(r);
-            this.bullet_timer = 0;
-        } else {
-            this.bullet_timer++;
+            this.fire_delay = false;
+            setTimeout(() => {
+                this.fire_delay = true;
+            }, r.delay);
         }
     }
 
@@ -303,8 +293,11 @@ class Zombie extends Entity {
         this.move_y = 0;
         this.speed = 1;
         this.angle = 0;
-        this.bullet_timer = 0;
-        this.time_to_fire = 7;
+
+        this.fire_delay = true;
+        this.real_fire_delay = true;
+        this.fake_fire_delay = true;
+
         this.canIwalk = false;
     }
 
@@ -313,58 +306,59 @@ class Zombie extends Entity {
     }
 
     update(obj) {
+        this.check(obj);
+
         zphysicManager.update(obj);
     }
 
     onTouchEntity(obj) {
-       // this.kill();
+        // this.kill();
     }
 
     kill() {
         for (let i = 0; i < zgameManager.entities.length; i++) {
             let e = zgameManager.entities[i];
             if (e.name === this.name) {
-                console.log("| name of fly | " + e.name + "pos x : " + e.pos_x + " pos .y: " + e.pos_y);
+                //  console.log("| name of fly | " + e.name + "pos x : " + e.pos_x + " pos .y: " + e.pos_y);
                 zgameManager.entities.splice(i, 1);
             }
         }
     }
 
-    // fire() {
-    //     if (this.bullet_timer === this.time_to_fire) {
-    //         let r = new Rocket();
-    //         r.size_x = 3;
-    //         r.size_y = 3;
-    //         r.owner = this.name;
-    //         r.name = "rocket_spe_" + (++zgameManager.fireNum);
-    //         let Vx = this.pos_x - zgameManager.player.pos_x - zgameManager.player.size_x / 2;
-    //         let Vy = this.pos_y - zgameManager.player.pos_y - zgameManager.player.size_y / 2;
-    //
-    //         if (Vx || Vy) {
-    //             r.angle = Math.atan2(Vy, Vx);
-    //         } else {
-    //             r.angle = 0;
-    //         }
-    //
-    //         if (r.angle < 0) {
-    //             r.angle += 2 * Math.PI;
-    //         }
-    //
-    //         let startXY = this.getBulletStartPos(r.angle, this);
-    //         r.pos_x = startXY.x;
-    //         r.pos_y = startXY.y;
-    //
-    //         zgameManager.entities.push(r);
-    //         r.owner = this;
-    //         this.bullet_timer = 0;
-    //     }  else {
-    //         this.bullet_timer++;
-    //     }
-    // }
+    fire() {
+        if (this.real_fire_delay) {
+        let r = new Rocket();
+        r.size_x = 5;
+        r.size_y = 5;
+        r.owner = this.name;
+        r.name = "bullet_" + (++zgameManager.fireNum);
+        let Vx = this.pos_x - zgameManager.player.pos_x - zgameManager.player.size_x / 2;
+        let Vy = this.pos_y - zgameManager.player.pos_y - zgameManager.player.size_y / 2;
 
-    getBulletStartPos(angle, obj) {
-        let StartXPos = (obj.pos_x ) - cos(angle) * 10;
-        let StartYPos = (obj.pos_y ) - sin(angle) * 10;
+        if (Vx || Vy) {
+            r.angle = Math.atan2(Vy, Vx);
+        } else {
+            r.angle = 0;
+        }
+        if (r.angle < 0) {
+            r.angle += 2 * Math.PI;
+        }
+        let startXY = this.getBulletStartPos2(r.angle, this);
+        r.pos_x = startXY.x;
+        r.pos_y = startXY.y;
+        r.owner = this;
+        zgameManager.entities.push(r);
+            this.real_fire_delay = false;
+            setTimeout(() => {
+                this.real_fire_delay = true;
+            }, r.delay);
+        }
+
+    }
+
+    getBulletStartPos2(angle, obj) {
+        let StartXPos = (obj.pos_x ) - cos(angle) * 20;
+        let StartYPos = (obj.pos_y ) - sin(angle) * 20;
 
         return {
             x: StartXPos,
@@ -373,14 +367,14 @@ class Zombie extends Entity {
     }
 
     fire_test() {
-        if (this.bullet_timer === this.time_to_fire) {
+        if (this.fire_delay) {
             let r = new FakeBullet();
-            r.size_x = 3;
-            r.size_y = 3;
+            r.size_x = 2;
+            r.size_y = 2;
             r.owner = this.name;
             r.name = "rocket_spe_" + (++zgameManager.fireNum);
-            let Vx = this.pos_x - zgameManager.player.pos_x - zgameManager.player.size_x / 3;
-            let Vy = this.pos_y - zgameManager.player.pos_y - zgameManager.player.size_y / 3;
+            let Vx = this.pos_x - zgameManager.player.pos_x - zgameManager.player.size_x / 2;
+            let Vy = this.pos_y - zgameManager.player.pos_y - zgameManager.player.size_y / 2;
 
             if (Vx || Vy) {
                 r.angle = Math.atan2(Vy, Vx);
@@ -398,20 +392,81 @@ class Zombie extends Entity {
 
             zgameManager.entities.push(r);
             r.owner = this;
-            this.bullet_timer = 0;
-        } else {
-            this.bullet_timer++;
+            this.fire_delay = false;
+            setTimeout(() => {
+                this.fire_delay = true;
+            }, r.delay);
         }
     }
 
     getBulletStartPos(angle, obj) {
-        let StartXPos = (obj.pos_x ) - cos(angle) * 40;
-        let StartYPos = (obj.pos_y ) - sin(angle) * 40;
+        let StartXPos = (obj.pos_x ) - cos(angle);
+        let StartYPos = (obj.pos_y ) - sin(angle);
 
         return {
             x: StartXPos,
             y: StartYPos
         }
+    }
+
+
+    check(obj) {
+
+        let angle = 0;
+        let Vx = obj.pos_x - zgameManager.player.pos_x + zgameManager.player.size_x / 2;
+        let Vy = obj.pos_y - zgameManager.player.pos_y + zgameManager.player.size_y / 2;
+
+        if (Vx || Vy) {
+            angle = Math.atan2(Vy, Vx);
+        } else {
+            angle = 0;
+        }
+
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        // console.log("angle " + angle);
+
+        let nextPosX_front, nextPosY_front;
+        let nextPosX_back, nextPosY_back;
+
+        nextPosX_front = obj.pos_x + obj.size_x / 2 + cos(angle);
+        nextPosY_front = obj.pos_y + obj.size_y / 2 + sin(angle);
+        nextPosX_back = obj.pos_x + cos(angle);
+        nextPosY_back = obj.pos_y + sin(angle);
+
+
+        let ts = zapManager.getTilesetIdx(nextPosX_front, nextPosY_front);
+        let ts_back = zapManager.getTilesetIdx(nextPosX_back, nextPosY_back);
+        //   console.log("DIS " + obj.name + " dis = " + this.distance(obj.pos_x, zgameManager.player.pos_x, obj.pos_y, zgameManager.player.pos_y));
+        //    console.log("PP   " + zgameManager.player.pos_x + " " + zgameManager.player.pos_y);
+        //    console.log("TS " + obj.name + " " + zapManager.getTilesetIdx(obj.pos_x, obj.pos_y));
+        if (ts_back === 2 || ts === 2) {
+            if (this.distance(obj.pos_x, zgameManager.player.pos_x, obj.pos_y, zgameManager.player.pos_y) < 500) {
+                if (this.checkForBarriers(obj)) {
+                    // console.log(obj);
+                    if (obj.canIwalk === true) {
+                        //alert();
+                        obj.fire();
+                        obj.pos_x -= cos(angle) * 2;
+                        obj.pos_y -= sin(angle) * 2;
+                    }
+                }
+
+            }
+        } else if (ts_back === 1 || ts === 1) {
+            obj.pos_x += cos(angle) * obj.size_x;
+            obj.pos_y += sin(angle) * obj.size_y;
+        }
+    }
+
+    checkForBarriers(obj) {
+        obj.fire_test();
+        return true;
+    }
+
+    distance(x1, x2, y1, y2) {
+        return sqrt((pow(x2 - x1, 2) + pow(y2 - y1, 2)));
     }
 }
 
@@ -421,12 +476,13 @@ class FakeBullet extends Entity {
         this.move_x = 0;
         this.move_y = 0;
         this.speed = 90;
-        this.owner = new Zombie();
+        this.owner = null;
+        this.delay = 111;
 
     }
 
     draw(ctx) {
-        zpriteManager.drawSprite(ctx, "sprite467", this.pos_x, this.pos_y);
+        //zpriteManager.drawSprite(ctx, "sprite467", this.pos_x, this.pos_y);
     }
 
     update() {
@@ -434,18 +490,21 @@ class FakeBullet extends Entity {
     }
 
     onTouchEntity(obj) {
-        console.log(obj);
-        if (obj.name === "player" && this.name.match(/rocket_spe_[\d*]/)) {
-            console.log(this.owner.name + " TRUE");
-            this.owner.canIwalk = true;
-        } else {
-            console.log("FALSE!");
-            this.owner.canIwalk = false;
+        // console.log(obj);
+        if (obj.name.includes('rocket_spe_')) {
+            obj.kill();
+            this.kill();
         }
-        this.kill();
+        if (obj.name.includes('player')) {
+            let entity = this.owner;
+            if (entity !== null) entity.canIwalk = true;
+            this.kill();
+        }
     }
 
     onTouchMap(idx) {
+        let entity = this.owner;
+        if (entity !== null) entity.canIwalk = false;
         this.kill();
     }
 
@@ -467,7 +526,8 @@ class Rocket extends Entity {
         this.move_x = 0;
         this.move_y = 0;
         this.speed = 90;
-        this.owner = new Zombie();
+        this.owner = null;
+        this.delay = 250;
 
     }
 
@@ -486,8 +546,7 @@ class Rocket extends Entity {
         // } else {
         //     this.owner.canIwalk = false;
         // }
-        if (obj.name.match(/zombie_[\d*]/) || obj.name.match(/player/) ||
-            obj.name.match(/rocket_[\d*]/) || obj.name.match(/rocket_spe_[\d*]/)) {
+        if (obj.name.match(/zombie_[\d*]/) || obj.name.match(/player/)) {
             //alert(obj.name);
 
             obj.kill();
@@ -651,57 +710,91 @@ class eventManager {
         let action = zeventManager.bind[event.keyCode];
         if (action) {
             zeventManager.action[action] = false;
-            //  console.log("CLICKED = > " + |z|e|v|e|n|t| Manager.action[action]);
         }
     }
 
 
 }
 
-
 class physicManager {
 
     update(obj) {
 
-        if (obj.name.match(/zombie_[\d*]/)) {
+        if (obj.name.match(/bullet_[\d*]/)) {
+            let newX = obj.pos_x,
+                newY = obj.pos_y;
 
-            this.check(obj);
-
-        }
-        if (obj.name.match(/rocket_[\d*]/)) {
-            // obj.bullet_timer++;
-            obj.pos_x += Math.cos(obj.angle) * 22;
-            obj.pos_y += Math.sin(obj.angle) * 22;
+                //alert(obj.owner.name);
+            if(obj.owner.name === "player") {
+                newX += Math.cos(obj.angle) * 12;
+                newY += Math.sin(obj.angle) * 12;
+            }else {
+                newX -= Math.cos(obj.angle) * 22;
+                newY -= Math.sin(obj.angle) * 22;
+            }
+            let e = this.entityAtXY(obj, newX, newY);
+            let ts = zapManager.getTilesetIdx(newX + obj.size_x, newY + obj.size_y);
+            let ts_back = zapManager.getTilesetIdx(newX, newY);
+            if (e !== null && obj.onTouchEntity) {
+                console.log("naem " + e.name);
+                if (!e.name.includes('rocket_spe_')) obj.onTouchEntity(e);
+                else console.log("HIT " + e.name);
+            }
+            if (ts_back !== 2 || ts !== 2 && obj.onTouchMap) obj.onTouchMap(ts);
+            // console.log(ts + ' ' + obj.name);
+            if ((ts === 2 && ts_back === 2 && (e === null || e.name.includes('rocket_spe_')))) {
+                obj.pos_x = newX;
+                obj.pos_y = newY;
+            }
         }
         if (obj.name.match(/rocket_spe_[\d*]/)) {
             // obj.bullet_timer++;
-            obj.pos_x -= Math.cos(obj.angle) * 12;
-            obj.pos_y -= Math.sin(obj.angle) * 12;
+            let newX = obj.pos_x,
+                newY = obj.pos_y;
+            newX -= Math.cos(obj.angle) * 61;
+            newY -= Math.sin(obj.angle) * 61;
+            let ts = zapManager.getTilesetIdx(newX + obj.size_x, newY + obj.size_y);
+            let ts_back = zapManager.getTilesetIdx(newX, newY);
+
+            let e = this.entityAtXY(obj, newX, newY);
+            if (e !== null && obj.onTouchEntity) {
+                console.log("imya " + e.name);
+                if (!e.name.includes('bullet_') || !e.name.includes('rocket_spe_')) obj.onTouchEntity(e);
+                else console.log("huit " + e.name);
+            }
+            if (ts_back !== 2 || ts !== 2 && obj.onTouchMap) obj.onTouchMap(ts);
+            // console.log(ts + ' ' + obj.name);
+
+
+            if ((ts === 2 && ts_back === 2 && (e === null || e.name.includes('bullet_') || e.name.includes('rocket_spe_') || e.name.includes('zombie_')))) {
+                obj.pos_x = newX;
+                obj.pos_y = newY;
+            }
+
+
+        } else {
+            let newX = obj.pos_x + obj.speed * obj.move_x;
+            let newY = obj.pos_y + obj.speed * obj.move_y;
+
+            let ts = zapManager.getTilesetIdx(newX + obj.size_x / 2, newY + obj.size_y / 2);
+            let ts_back = zapManager.getTilesetIdx(newX, newY);
+
+            let e = this.entityAtXY(obj, newX, newY);
+            if (e !== null && obj.onTouchEntity) {
+                obj.onTouchEntity(e)
+            }
+            if (ts_back !== 2 || ts !== 2 && obj.onTouchMap) obj.onTouchMap(ts);
+            // console.log(ts + ' ' + obj.name);
+
+
+            if ((ts === 2 || ts_back === 2 ) && (e === null || !obj.name.match(/zombie_[\d*]/))) {
+                obj.pos_x = newX;
+                obj.pos_y = newY;
+            } else if (ts === 1 && ts_back === 1) {
+                return "break";
+            }
+            return "move";
         }
-        let newX = obj.pos_x + obj.speed / 2 * obj.move_x;
-        let newY = obj.pos_y + obj.speed / 2 * obj.move_y;
-
-        let ts = zapManager.getTilesetIdx(newX + obj.size_x / 2, newY + obj.size_y / 2);
-        let ts_back = zapManager.getTilesetIdx(newX, newY);
-        if (obj.name === "player")
-            console.log("ts_back " + ts_back);
-        let e = this.entityAtXY(obj, newX, newY);
-        if (e !== null && obj.onTouchEntity) {
-            obj.onTouchEntity(e)
-        } else if (obj.name.match(/zombie_[\d*]/)) {
-            obj.canIwalk = false;
-        }
-        if (ts_back !== 2 || ts !== 2 && obj.onTouchMap) obj.onTouchMap(ts);
-        // console.log(ts + ' ' + obj.name);
-
-
-        if (ts === 2 && ts_back === 2 && e === null && !obj.name.match(/zombie_[\d*]/)) {
-            obj.pos_x = newX;
-            obj.pos_y = newY;
-        } else
-            return "break";
-        return "move";
-
         // else if (obj.move_x === 0 && obj.move_y === 0)
         //     return "stop";
     }
@@ -725,62 +818,7 @@ class physicManager {
         return null;
     }
 
-    check(obj) {
 
-        let angle = 0;
-        let Vx = obj.pos_x - zgameManager.player.pos_x - zgameManager.player.size_x / 2;
-        let Vy = obj.pos_y - zgameManager.player.pos_y - zgameManager.player.size_y / 2;
-
-        if (Vx || Vy) {
-            angle = Math.atan2(Vy, Vx);
-        } else {
-            angle = 0;
-        }
-
-        if (angle < 0) {
-            angle += 2 * Math.PI;
-        }
-        // console.log("angle " + angle);
-
-        let nextPosX_front, nextPosY_front;
-        let nextPosX_back, nextPosY_back;
-
-        nextPosX_front = obj.pos_x + obj.size_x / 2 + cos(angle);
-        nextPosY_front = obj.pos_y + obj.size_y / 2 + sin(angle);
-        nextPosX_back = obj.pos_x + cos(angle);
-        nextPosY_back = obj.pos_y + sin(angle);
-
-
-        let ts = zapManager.getTilesetIdx(nextPosX_front, nextPosY_front);
-        let ts_back = zapManager.getTilesetIdx(nextPosX_back, nextPosY_back);
-        // console.log("DIS " + obj.name + " dis = " + this.distance(obj.pos_x, zgameManager.player.pos_x, obj.pos_y, zgameManager.player.pos_y));
-        // console.log("PP   " + zgameManager.player.pos_x + " " + zgameManager.player.pos_y);
-        // console.log("TS " + obj.name + " " + zapManager.getTilesetIdx(obj.pos_x, obj.pos_y));
-        if (ts_back === 2 || ts === 2) {
-            if (this.distance(obj.pos_x, zgameManager.player.pos_x, obj.pos_y, zgameManager.player.pos_y) < 500) {
-                if (this.checkForBarriers(obj)) {
-                    // console.log(obj);
-                    if (obj.canIwalk === true) {
-                        obj.pos_x -= cos(angle) * 5;
-                        obj.pos_y -= sin(angle) * 5;
-                    }
-                }
-
-            }
-        } else if (ts_back === 1 || ts === 1) {
-            obj.pos_x += cos(angle) * obj.size_x;
-            obj.pos_y += sin(angle) * obj.size_y;
-        }
-    }
-
-    checkForBarriers(obj) {
-        obj.fire_test();
-        return true;
-    }
-
-    distance(x1, x2, y1, y2) {
-        return sqrt((pow(x2 - x1, 2) + pow(y2 - y1, 2)));
-    }
 }
 
 

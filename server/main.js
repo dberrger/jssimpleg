@@ -649,7 +649,18 @@ class spriteManager {
                 ctx.drawImage(this.image, sprite.x, sprite.y, sprite.w, sprite.h, -17, -9, sprite.w, sprite.h);
                 ctx.restore();
             } else {
-                ctx.drawImage(this.image, sprite.x, sprite.y, sprite.w, sprite.h, x, y, sprite.w, sprite.h);
+               // ctx.drawImage(this.image, sprite.x, sprite.y, sprite.w, sprite.h, x, y, sprite.w, sprite.h);
+
+                let xy1 = zapManager.centerAt(zgameManager.player.pos_x, zgameManager.player.pos_y);
+
+                let dx =  zgameManager.player.pos_x - xy1.x + zgameManager.player.size_x / 2 - x;
+                let dy =  zgameManager.player.pos_y - xy1.y + zgameManager.player.size_y / 2 - y;
+                let rot = Math.atan2(dy, dx);
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rot);
+                ctx.drawImage(this.image, sprite.x, sprite.y, sprite.w, sprite.h, -17, -9, sprite.w, sprite.h);
+                ctx.restore();
             }
         }
     }

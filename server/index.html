@@ -2,15 +2,59 @@
 <html>
 <head>
 
+
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
 </head>
-<body>
+<body style="background-color: black ">
+<div >
 
-<canvas id="game" width="1200" height="720" style="border: 1px solid black;"></canvas>
-
-
-
+    <img src="screen_3.png" style="position: absolute; margin: -7px; ">
+    <canvas id="game"  width="1190" height="715" style="position:absolute;"></canvas>
+</div>
 <script src="main.js" type="application/javascript"></script>
-
-
+<script src="site_stuff.js" type="application/javascript"></script>
+<div style="margin-left: 60%;">
+  <div style=" margin-top: -10px;">
+      <img src="about_button.png" style="width: 200px;" onclick="about()">
+    <img src="howto_button.png" style="width: 200px;" onclick="howto()">
+    <img src="leaderboard_button.png" style="width: 200px;" onclick="leaderboard();scoreboard(true); " >
+  </div>
+    <div id="about" style="margin-left: 40px; margin-top: 20px" >
+        <img src="header.jpg">
+        <p style="color: #909000; font-family: 'Lobster', Georgia, Times, serif;">
+        Hotline Miami 2: Wrong Number is the brutal conclusion to the Hotline Miami saga,<br>
+        set against a backdrop of escalating violence and retribution over spilled blood in the original game.<br>
+        Follow the paths of several distinct factions<br>
+        – each with their own questionable methods and uncertain motivations <br>– as unforeseen consequences intersect and<br>
+        reality once again slips back into a brilliant haze of neon and bloodshed.</p>
+        <p style="color: #909000; font-family: 'Lobster', Georgia, Times, serif;visibility: hidden">
+            Blistering combat against punishing opposition will require intense focus as new variables, weapons,<br>
+            and methods of execution are introduced throughout the struggle.<br> Let the striking colors of an unmistakable<br>
+            visual style wash over as you meticulously<br>
+            cut down those that would stand between you and the ultimate meaning behind the massacre. This is the finale,<br>
+            this is the unquestionable end.</p>
+    </div>
+    <div id="howto"  style="display: none">
+        <img src="header_2.jpg">
+        <p style="color: #909000; font-family: 'Lobster', Georgia, Times, serif; ">
+        Hotline Miami 2: Wrong Number is the brutal conclusion to the Hotline Miami saga,<br>
+        set against a backdrop of escalating violence and retribution over spilled blood in the original game.<br>
+        Follow the paths of several distinct factions<br></div>
+    <div id="scoreboard" class="overlay-full; " style="display: none">
+    <span class="overlay-text" id="scoreboard-text">
+        Scoreboard
+    </span>
+        <span class="big-button" id="scoreboard-clear" onclick="if( confirm(`Do you really want to reset your progress?`) ) {zscoreManager.clearSaves(); location.reload(); }">
+        CLEAR RECORDS
+    </span>
+        <span class="big-button" id="scoreboard-close" onclick="scoreboard(false);">
+        CLOSE
+    </span>
+    </div>
+</div>
+<div style="float: right">
+<button onclick="start()">Start</button>
+</div>
 </body>
 </html>
